@@ -10,7 +10,9 @@
 <section>
     <div class="w-[800px] py-[30px] min-h-[106px] m-auto flex justify-start">
         {#each deadPieces as piece}
-            <svelte:component this={piece.type} piece={piece} />
+            <div class="w-[80px]">
+                <svelte:component this={piece.type} piece={piece} />
+            </div>
         {/each}
     </div>
 </section>

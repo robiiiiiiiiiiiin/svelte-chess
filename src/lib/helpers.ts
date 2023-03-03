@@ -13,3 +13,7 @@ export function shallowEqual(object1: any, object2: any) {
     }
     return true;
 }
+
+export function capitalizeFirstLetter(string: string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}

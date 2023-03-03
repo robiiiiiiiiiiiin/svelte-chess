@@ -63,12 +63,14 @@ export function clearPendingMoves() {
 }
 export function movePiece(piece: Piece, position: Position) {
     board.update(board => board.map(square => {
+        // Remove the piece from the past position
         if (square.piece?.id === piece.id) {
             square.piece = null
         }
         if (shallowEqual(square.position, position)) {
-            // Put the piece in the cemetery if it's a capture
+            // Eat
             if (square.piece) cemetery.update(cemetery => [...cemetery, {...square.piece!, alive: false}])
+            console.log("eat, new piece: ", piece)
             square.piece = piece
         }
         return square
