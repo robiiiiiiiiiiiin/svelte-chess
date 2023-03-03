@@ -1,7 +1,7 @@
 <script lang="ts">
     import type { Position } from "src/lib/models/Board";
     import type { Piece } from "src/lib/models/Piece";
-    import {addPendingMoves, clearPendingMoves, board, selectedPiece} from "src/lib/stores/BoardStore";
+    import {addPendingMoves, clearPendingMoves, board, selectedPiece, colorToPlay} from "src/lib/stores/BoardStore";
     import { capitalizeFirstLetter } from "src/lib/helpers";
 
     import BishopBlack from "src/lib/components/icons/BishopBlack.svelte";
@@ -38,7 +38,6 @@
     }
 
     function selectPiece() {
-        console.log("selectPiece()")
         clearPendingMoves()
         selectedPiece.set(piece)
         // Add listener to unselect the piece when clicking outside
@@ -71,7 +70,7 @@
 </script>
 
 
-<button bind:this={button} type="button" aria-label="{name}-{piece.color}" class:selected class="piece w-full h-full flex justify-center items-center" on:click|self={selected ? unSelectPiece : selectPiece} disabled={!piece.alive}>
+<button bind:this={button} type="button" aria-label="{name}-{piece.color}" class:selected class="piece w-full h-full flex justify-center items-center" on:click|self={selected ? unSelectPiece : selectPiece} disabled={!piece.alive || piece.color !== $colorToPlay}>
     <svelte:component this={iconComponent} class="pointer-events-none scale-[1.8]" />
 </button>
 

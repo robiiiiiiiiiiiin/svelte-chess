@@ -1,4 +1,4 @@
-import { writable, type Writable } from 'svelte/store';
+import { derived, writable, type Writable } from 'svelte/store';
 
 import type { Board, Square, Rank, File, Position } from "src/lib/models/Board";
 import type { Piece } from "src/lib/models/Piece";
@@ -15,6 +15,7 @@ import King from "/src/lib/components/pieces/King.svelte";
 //@ts-ignore
 import Pawn from "/src/lib/components/pieces/Pawn.svelte";
 import { shallowEqual } from 'src/lib/helpers';
+import type { Turn } from '../models/Turn';
 
 /* let boardSquares = [
     [{},{},{},{},{},{},{},{}],
@@ -35,6 +36,10 @@ export const board: Writable<Board> = writable(ranks.map((rank: Rank) => files.m
 export const cemetery: Writable<Piece[]> = writable([])
 
 export const selectedPiece: Writable<Piece | null> = writable(null)
+
+export const turns: Writable<Turn[]> = writable([])
+
+export const colorToPlay = derived( turns, $turns => $turns.length % 2 === 0 ? "white" : "black" );
 
 /******************************************************** METHODS ****************************/
 function addPieceToBoard(piece: Piece, position: Position) {
@@ -62,10 +67,21 @@ export function clearPendingMoves() {
     }))
 }
 export function movePiece(piece: Piece, position: Position) {
+    let turn: Turn = {
+        from: {
+            piece,
+            position
+        },
+        to: {
+            piece,
+            position
+        }
+    }
     board.update(board => board.map(square => {
         // Remove the piece from the past position
         if (square.piece?.id === piece.id) {
             square.piece = null
+            turn.from.position = square.position
         }
         if (shallowEqual(square.position, position)) {
             // Eat
@@ -75,6 +91,7 @@ export function movePiece(piece: Piece, position: Position) {
         }
         return square
     }))
+    turns.update(turns => [...turns, turn])
 }
 
 /******************************************************** INITIAL PIECES ****************************/
